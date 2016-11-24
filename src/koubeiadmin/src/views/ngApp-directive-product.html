@@ -1,0 +1,540 @@
+<div class="product-data-wrapper">
+
+    <div class="my-nav-wrapper">
+        <div class="tab-box list-unstyled cf">
+            <div class="tab-item-box">
+                <span class="tab-item"
+                   ng-class="{active:vm.currentStep==$index+1}"
+                   ng-click="vm.switchStep(vm.currentStep,$index)"
+                   ng-repeat="item in vm.step" >
+                    {{item}}
+                </span>
+            </div>
+            <div class="tab-bt-box">
+                <div ng-if="vm.currentStep==2" hb-plupload="vm.top_imagesOptions">
+                    <div hb-plupload-bt-container hb-plupload-drag-container>
+                        <button  type="button" hb-plupload-bt class="btn btn-color-main">
+                            上传图片
+                        </button>
+                    </div>
+                </div>
+                <div ng-if="vm.currentStep==3" hb-plupload="vm.content_imagesOptions">
+                    <div hb-plupload-bt-container hb-plupload-drag-container>
+                        <button  type="button" hb-plupload-bt class="btn btn-color-main">
+                            上传图片
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <form class="form-horizontal" ng-show="vm.currentStep==1" name="formStep1" novalidate ng-submit="vm.formSubmitStep1(productData)">
+        <div class="form-group">
+            <label for="a1" class="col-sm-1 control-label">商品名称 </label>
+            <div class="col-sm-3" >
+                <input type="text"  class="form-control" required  id="a1" name="subject" placeholder="请输入商品名称" ng-model="productData.subject">
+            </div>
+            <label  class="col-sm-1 control-label">所属门店 </label>
+            <div class="col-sm-3" >
+                <ui-select multiple search-enabled="false" name="shop_ids" ng-required="true"
+                           ng-model="productData.shop_ids" id="a2" theme="bootstrap" ng-change="vm.clearGiftsShop_ids(productData)"
+                           sortable="true" close-on-select="false" >
+                    <ui-select-match placeholder="请选择门店">
+                        {{$item.main_shop_name}}<span ng-if="$item.branch_shop_name">({{$item.branch_shop_name}})</span>
+                    </ui-select-match>
+                    <ui-select-choices repeat="shop in vm.shops">
+                        <div >{{shop.main_shop_name}} <span ng-if="shop.branch_shop_name">({{shop.branch_shop_name}})</span></div>
+                    </ui-select-choices>
+                </ui-select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="a3" class="col-sm-1 control-label">折扣价 </label>
+            <div class="col-sm-3">
+                <input type="text" class="form-control" required id="a3" name="price" placeholder="请输入折扣价" ng-model="productData.price">
+            </div>
+            <label for="a4" class="col-sm-1 control-label">原价 </label>
+            <div class="col-sm-3">
+                <input type="text" class="form-control" required id="a4" name="original_price" placeholder="请输入原价" ng-model="productData.original_price">
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="a5" class="col-sm-1 control-label">定金 </label>
+            <div class="col-sm-3">
+                <input type="text" class="form-control"  id="a5" name="deposit" placeholder="请输入定金" ng-model="productData.deposit">
+            </div>
+            <label for="a6" class="col-sm-1 control-label">商品类型 </label>
+            <div class="col-sm-3">
+                <select class="form-control" required ng-init="productData.price_mode='FIX'" id="a6" name="price_mode"
+                        ng-model="productData.price_mode">
+                    <option value="FIX">标准商品</option>
+                    <option value="FLOAT">非标准商品</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="a7" class="col-sm-1 control-label">商品类型 </label>
+            <div class="col-sm-3">
+                <select class="form-control" required ng-init="productData.validity_period='30'" id="a7" name="validity_period"
+                        ng-model="productData.validity_period">
+                    <option value="30">30天</option>
+                    <option value="90">90天</option>
+                    <option value="180">180天</option>
+                    <option value="360">360天</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-offset-1 col-sm-11">
+                <div ng-if="formAction=='add'">
+                    <button type="submit" class="btn btn-color-main">下一步</button>
+                    <button type="button" ng-click="$root.history.go(-1)" class="btn btn-default">取消</button>
+                </div>
+                <div ng-if="formAction=='update'">
+                    <button type="button" class="btn btn-color-main">保存</button>
+                    <button type="button" ng-click="$root.history.go(-1)" class="btn btn-default">取消</button>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <div class="product-pic-wrapper" ng-show="vm.currentStep==2">
+        <div ng-show="productData.top_images.length==0" class="empty-box" hb-plupload="vm.top_imagesOptions">
+            <div hb-plupload-bt-container hb-plupload-drag-container>
+                <img class="img" ng-src="/images/product-pic-empty.png" hb-plupload-bt >
+                <div class="empty-text">还未上传图片哟~</div>
+            </div>
+        </div>
+        <div class="row" ui-sortable ng-model="productData.top_images">
+            <div class="col-xs-6 col-md-3" ng-repeat="img in productData.top_images track by $index">
+                <div class="thumbnail">
+                    <div ng-show="img.progress<100">
+                        <div uib-progressbar animate="true" class="progress-striped" type="color-main" value="img.progress" ><b>{{img.progress}}%</b></div>
+                    </div>
+                    <img ng-show="img" ng-src="{{img.url}}" >
+                    <table ng-show="img" class="bt-box" ng-if="img.aid" >
+                        <tr>
+                            <td class="td">
+                                <span ng-click="productData.cover=img.aid" ng-if="productData.cover!=img.aid" class="btn btn-block btn-success set-cover" >设为封面</span>
+                                <span ng-if="productData.cover==img.aid" class="btn btn-block btn-warning set-cover" >封面图</span>
+                                <span ng-click="vm.removeImg(productData.top_images,img.aid)" class="btn btn-block btn-danger delete-pic" >删除图片</span>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="form-helper-box">
+            图片建议尺寸在800px*600px以上，不超过5m，格式：jpg，jpeg，gif，png，不可有水印，须实景图，如上传软件效果图则将被驳回。
+        </div>
+        <div class="form-bt-box">
+            <div ng-if="formAction=='add'">
+                <button type="button" ng-click="vm.formSubmitStep2(productData)" class="btn btn-color-main">下一步</button>
+                <button type="button" ng-click="vm.currentStep=1" class="btn btn-default">取消</button>
+            </div>
+            <div ng-if="formAction=='update'">
+                <button type="button" class="btn btn-color-main">保存</button>
+                <button type="button" ng-click="$root.history.go(-1)" class="btn btn-default">取消</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="product-pic-wrapper" ng-show="vm.currentStep==3">
+        <div ng-show="productData.content_images.length==0" class="empty-box" hb-plupload="vm.content_imagesOptions">
+            <div hb-plupload-bt-container hb-plupload-drag-container>
+                <img class="img" ng-src="/images/product-pic-empty.png" hb-plupload-bt >
+                <div class="empty-text">还未上传图片哟~</div>
+            </div>
+        </div>
+        <div class="row" ui-sortable ng-model="productData.content_images">
+            <div class="col-xs-6 col-md-3" ng-repeat="img in productData.content_images track by $index">
+                <div class="thumbnail">
+                    <div ng-show="img.progress<100">
+                        <div uib-progressbar animate="true" class="progress-striped" type="color-main" value="img.progress" ><b>{{img.progress}}%</b></div>
+                    </div>
+                    <img ng-show="img" ng-src="{{img.url}}" >
+                    <table ng-show="img" class="bt-box" ng-if="img.aid" >
+                        <tr>
+                            <td class="td">
+                                <span ng-click="vm.removeImg(productData.content_images,img.aid)"  class="btn btn-block btn-danger delete-pic">删除图片</span>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="form-helper-box">
+            图片建议尺寸在800px*600px以上，不超过5m，格式：jpg，jpeg，gif，png，不可有水印，须实景图，如上传软件效果图则将被驳回。
+        </div>
+        <div class="form-bt-box">
+            <div ng-if="formAction=='add'">
+                <button type="button" ng-click="vm.formSubmitStep3(productData)" class="btn btn-color-main">下一步</button>
+                <button type="button" ng-click="vm.currentStep=2" class="btn btn-default">取消</button>
+            </div>
+            <div ng-if="formAction=='update'">
+                <button type="button" class="btn btn-color-main">保存</button>
+                <button type="button" ng-click="$root.history.go(-1)" class="btn btn-default">取消</button>
+            </div>
+        </div>
+    </div>
+
+
+    <form class="form-horizontal" ng-show="vm.currentStep==4" name="formStep4"
+          novalidate ng-submit="vm.formSubmitStep4(productData)">
+        <div class="form-group">
+            <label class="col-sm-1 control-label">服务团队:</label>
+            <label for="d1" class="col-sm-1 control-label">主持人</label>
+            <div class="col-sm-2" >
+                <select class="form-control" required  id="d1" name="zhuchi_level"
+                        ng-init="productData.zhuchi_level='首席'"
+                        ng-model="productData.zhuchi_level">
+                    <option value="首席">首席</option>
+                    <option value="资深">资深</option>
+                    <option value="指定">指定</option>
+                    <option value="不包含">不包含</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-4 col-md-offset-2" >
+                <textarea name="zhuchi_desc"
+                          ng-init="productData.zhuchi_desc=''"
+                          ng-model="productData.zhuchi_desc" class="form-control"  id="d2"  rows="3"></textarea>
+            </div>
+            <div class="clearfix "></div>
+            <div class="col-sm-4 col-md-offset-2" >
+                <p class="help-block">主持人有四个类别，分别是首席，资深，指定和不包含，请详细填写主要说明内容。例如：一次免费沟通与彩排
+                </p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="d3" class="col-sm-2 control-label">化妆师</label>
+            <div class="col-sm-2" >
+                <select class="form-control" required  id="d3" name="huazhuang_level"
+                        ng-init="productData.huazhuang_level='首席'"
+                        ng-model="productData.huazhuang_level">
+                    <option value="首席">首席</option>
+                    <option value="资深">资深</option>
+                    <option value="指定">指定</option>
+                    <option value="不包含">不包含</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-4 col-md-offset-2" >
+                <textarea name="huazhuang_desc"
+                          ng-init="productData.huazhuang_desc=''"
+                          ng-model="productData.huazhuang_desc" class="form-control"  id="d4"  rows="3"></textarea>
+            </div>
+            <div class="clearfix "></div>
+            <div class="col-sm-4 col-md-offset-2" >
+                <p class="help-block">化妆师有四个类别，分别是首席，资深，指定和不包含，请详细填写主要说明内容。例如：一次免费试妆，全程跟妆，送伴娘妆和亲友妆
+                </p>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="d5" class="col-sm-2 control-label">摄影师</label>
+            <div class="col-sm-2" >
+                <select class="form-control" required  id="d5" name="sheying_level"
+                        ng-init="productData.sheying_level='首席'"
+                        ng-model="productData.sheying_level">
+                    <option value="首席">首席</option>
+                    <option value="资深">资深</option>
+                    <option value="指定">指定</option>
+                    <option value="不包含">不包含</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-4 col-md-offset-2" >
+                <textarea name="sheying_desc"
+                          ng-init="productData.sheying_desc=''"
+                          ng-model="productData.sheying_desc" class="form-control"  id="d6"  rows="3"></textarea>
+            </div>
+            <div class="clearfix "></div>
+            <div class="col-sm-4 col-md-offset-2" >
+                <p class="help-block">摄影师有四个类别，分别是首席，资深，指定和不包含，请详细填写主要说明内容。例如：全程跟拍，300-500 张精修 20 张，免费制作光盘，超时另加 80 元每小时
+                </p>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="d7" class="col-sm-2 control-label">摄像师</label>
+            <div class="col-sm-2" >
+                <select class="form-control" required  id="d7" name="shexiang_level"
+                        ng-init="productData.shexiang_level='首席'"
+                        ng-model="productData.shexiang_level">
+                    <option value="首席">首席</option>
+                    <option value="资深">资深</option>
+                    <option value="指定">指定</option>
+                    <option value="不包含">不包含</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-4 col-md-offset-2" >
+                <textarea name="shexiang_desc"
+                          ng-init="productData.shexiang_desc=''"
+                          ng-model="productData.shexiang_desc" class="form-control"  id="d8"  rows="3"></textarea>
+            </div>
+            <div class="clearfix "></div>
+            <div class="col-sm-4 col-md-offset-2" >
+                <p class="help-block">摄像师有四个类别，分别是首席，资深，指定和不包含，请详细填写主要说明内容。例如：全程跟拍，MV 3-5 小时和流程片含后期制作，超时另加 80元每小时
+                </p>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-1 control-label">婚礼布置:</label>
+            <label for="d10" class="col-sm-1 control-label">迎宾区</label>
+            <div class="col-sm-4" >
+                <textarea name="yingbin"
+                          ng-init="productData.yingbin=''"
+                          ng-model="productData.yingbin"
+                          class="form-control"
+                          placeholder="请输入迎宾区主要布置"
+                          id="d10"  rows="3"></textarea>
+            </div>
+            <div class="clearfix "></div>
+            <div class="col-sm-4 col-md-offset-2" >
+                <p class="help-block">迎宾区包含拍照区，签到区，甜品区等婚礼场外区域，请详细填写主要布置内容。例如：迎宾背景墙3mx4m，签到背景墙3mx4m，签到桌装饰，迎宾牌席位图展示，甜品区背景墙3mx4m，甜品桌装饰(不含甜品)
+                </p>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="d11" class="col-sm-2 control-label">仪式区</label>
+            <div class="col-sm-4" >
+                <textarea name="yishi"
+                          ng-init="productData.yishi=''"
+                          ng-model="productData.yishi"
+                          class="form-control"
+                          placeholder="请输入仪式区主要布置"
+                          id="d11"  rows="3"></textarea>
+            </div>
+            <div class="clearfix "></div>
+            <div class="col-sm-4 col-md-offset-2" >
+                <p class="help-block">仪式区包含主舞台区，T台区，仪式亭区等婚礼仪式区域，请详细填写主要布置内容。例如：主舞台背景8mx4m，蛋糕台1个，香槟台1个，鲜花拱门1个，鲜花路引8个
+                </p>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="d12" class="col-sm-2 control-label">宴会区</label>
+            <div class="col-sm-4" >
+                <textarea name="yanhui"
+                          ng-init="productData.yanhui=''"
+                          ng-model="productData.yanhui"
+                          class="form-control"
+                          placeholder="请输入宴会区主要布置"
+                          id="d12"  rows="3"></textarea>
+            </div>
+            <div class="clearfix "></div>
+            <div class="col-sm-4 col-md-offset-2" >
+                <p class="help-block">宴会区包含客人用餐区，请详细填写主要布置内容。例如：主桌桌花，客桌桌花，新娘新郎椅背装饰，客人椅背装饰，桌卡，菜单卡，喜糖纸品（不包含喜糖）
+                </p>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="d13" class="col-sm-2 control-label">花艺</label>
+            <div class="col-sm-4" >
+                <textarea name="huayi"
+                          ng-init="productData.huayi=''"
+                          ng-model="productData.huayi"
+                          class="form-control"
+                          placeholder="请输入花艺区主要布置"
+                          id="d13"  rows="3"></textarea>
+            </div>
+            <div class="clearfix "></div>
+            <div class="col-sm-4 col-md-offset-2" >
+                <p class="help-block">花艺包含婚礼当天所用婚礼花艺布置，请详细填写主要布置内容。例如：新娘手捧花 1 个，手腕花 1 个，新人及双方父母胸花共 6 个，车花 4 个
+                </p>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-1 control-label">灯光舞美:</label>
+            <label for="d14" class="col-sm-1 control-label">婚礼灯光</label>
+            <div class="col-sm-4" >
+                <textarea name="dengguang"
+                          ng-init="productData.dengguang=''"
+                          ng-model="productData.dengguang"
+                          class="form-control"
+                          placeholder="请输入婚礼灯光主要道具"
+                          id="d14"  rows="3"></textarea>
+            </div>
+            <div class="clearfix "></div>
+            <div class="col-sm-4 col-md-offset-2" >
+                <p class="help-block">婚礼灯光包含婚礼当天现场所用灯光，请详细填写主要道具内容。例如：三基色新闻面光灯 2 个，专业舞台电脑追光灯 1 个，专业染色LEDpar灯 6 个
+                </p>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="d15" class="col-sm-2 control-label">舞美道具</label>
+            <div class="col-sm-4" >
+                <textarea name="daoju"
+                          ng-init="productData.daoju=''"
+                          ng-model="productData.daoju"
+                          class="form-control"
+                          placeholder="请输入舞美道具主要道具"
+                          id="d15"  rows="3"></textarea>
+            </div>
+            <div class="clearfix "></div>
+            <div class="col-sm-4 col-md-offset-2" >
+                <p class="help-block">舞美道具包含婚礼当天现场所用道具，请详细填写主要道具内容。例如：大功率泡泡机 1 个，花样心形烛台 1 个
+                </p>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-1 control-label">补充说明:</label>
+            <label for="d16" class="col-sm-1 control-label">购买须知</label>
+            <div class="col-sm-4" >
+                <textarea name="dengguang"
+                          ng-init="productData.dengguang=''"
+                          ng-model="productData.dengguang"
+                          class="form-control"
+                          placeholder="请输入购买须知"
+                          id="d16"  rows="3"></textarea>
+            </div>
+            <div class="clearfix "></div>
+            <div class="col-sm-4 col-md-offset-2" >
+                <p class="help-block">购买须知包含商品的使用注意事项，请详细填写主要内容。例如：只适用于一对新人使用，外地客户需另行支付商家工作人员的交通差旅费，具体费用面议。图片仅供参考，具体细节需和策划师沟通敲定
+                </p>
+            </div>
+        </div>
+
+
+        <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-9">
+                <div ng-if="formAction=='add'">
+                    <button type="submit" class="btn btn-color-main"  >下一步</button>
+                    <button type="button" ng-click="vm.currentStep=3"  class="btn btn-default">取消</button>
+                </div>
+                <div ng-if="formAction=='update'">
+                    <button type="button" class="btn btn-color-main">保存</button>
+                    <button type="button" ng-click="$root.history.go(-1)" class="btn btn-default">取消</button>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <form class="form-horizontal" ng-show="vm.currentStep==5" name="formStep5"
+          novalidate ng-submit="vm.formSubmitStep5(productData)">
+
+        <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-9">
+                <button type="button" class="btn btn-success" ng-click="vm.addFormStep5Child(productData.gifts)" >新增</button>
+            </div>
+            <div class="col-sm-4 col-sm-offset-2" >
+                <p class="help-block">新增一条礼品规则</p>
+            </div>
+        </div>
+
+
+        <div ng-repeat="item in productData.gifts" ng-form="formStep5child"  >
+            <hr>
+            <div class="form-group">
+                <label ng-attr-for="e1-{{$index}}" class="col-sm-2 control-label">礼品标签</label>
+                <div class="col-sm-4" >
+                    <input type="text" class="form-control" required
+                           id="e1-{{$index}}" name="tag" placeholder="建议输入3个字，保证最佳展示效果"
+                           ng-model="item.tag">
+                </div>
+                <a class="col-sm-1 control-label text-left" ng-click="vm.removeFormStep5Child(productData.gifts,$index)" >
+                    删除
+                </a>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">赠送时间</label>
+                <div class="col-sm-4" >
+                    <div class="row" >
+                        <div class="col-sm-5" >
+                            <input type="text" class="form-control"
+                                   placeholder="开始时间" required
+                                   uib-datepicker-popup="yyyy-MM-dd"
+                                   datepicker-options="vm.dpOptions"
+
+                                   name="start_time"
+                                   ng-model="item.start_time" is-open="item.start_time_isOpen"
+                                   ng-focus="item.start_time_isOpen=true"
+                                   ng-required="true"
+                                   close-text="关闭"
+                                   current-text="今天"
+                                   clear-text="清除"
+                            />
+
+                        </div>
+                        <div class="col-sm-2 control-label text-center" >
+                            到
+                        </div>
+                        <div class="col-sm-5" >
+                            <input type="text" class="form-control"
+                                   placeholder="结束时间" required
+                                   uib-datepicker-popup="yyyy-MM-dd"
+                                   datepicker-options="vm.dpOptions"
+                                   name="end_time"
+                                   ng-model="item.end_time" is-open="item.end_time_isOpen"
+                                   ng-focus="item.end_time_isOpen=true"
+                                   ng-required="true"
+                                   close-text="关闭"
+                                   current-text="今天"
+                                   clear-text="清除"
+                            />
+                        </div>
+                    </div>
+                </div>
+                <div class="clearfix "></div>
+                <div class="col-sm-4 col-sm-offset-2" >
+                    <p class="help-block">赠送时间到期后，赠送信息将不显示</p>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label ng-attr-for="e4-{{$index}}" class="col-sm-2 control-label">展示门店</label>
+                <div class="col-sm-4" >
+                    <ui-select multiple search-enabled="false" name="shop_ids" ng-required="true"
+                               ng-model="item.shop_ids" id="e4-{{$index}}" theme="bootstrap"
+                                sortable="true" close-on-select="false"  >
+                        <ui-select-match placeholder="请选择所属门店">
+                            {{$item.main_shop_name}}<span ng-if="$item.branch_shop_name">({{$item.branch_shop_name}})</span>
+                        </ui-select-match>
+                        <ui-select-choices repeat="shop in productData.shop_ids">
+                            <div >{{shop.main_shop_name}} <span ng-if="shop.branch_shop_name">({{shop.branch_shop_name}})</span></div>
+                        </ui-select-choices>
+                    </ui-select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label ng-attr-for="e5-{{$index}}" class="col-sm-2 control-label">描述</label>
+                <div class="col-sm-4" >
+                    <input type="text" class="form-control" required
+                           id="e5-{{$index}}" name="remark" placeholder="建议输入15个字，保证最佳展示效果"
+                           ng-model="item.remark">
+                </div>
+            </div>
+
+
+        </div>
+
+
+        <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-9">
+                <div ng-if="formAction=='add'">
+                    <button type="submit" class="btn btn-color-main"  >提交</button>
+                    <button type="button" ng-click="vm.currentStep=4"  class="btn btn-default">取消</button>
+                </div>
+                <div ng-if="formAction=='update'">
+                    <button type="button" class="btn btn-color-main">保存</button>
+                    <button type="button" ng-click="$root.history.go(-1)" class="btn btn-default">取消</button>
+                </div>
+            </div>
+        </div>
+    </form>
+
+</div>

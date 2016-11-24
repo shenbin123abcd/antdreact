@@ -1,0 +1,57 @@
+<div>
+    <h3 class="page-title">我的商品 <a ui-sref="updateProduct">修改商品</a></h3>
+    <div class="my-nav-wrapper">
+        <div class="tab-box list-unstyled cf">
+            <div class="tab-item-box">
+                <a ui-sref="product({state:null})" class="tab-item"
+                   ui-sref-active="active">
+                    全部商品
+                </a>
+                <a ui-sref="product({state:0})" class="tab-item"
+                   ui-sref-active="active">
+                    下架商品
+                </a>
+                <a ui-sref="product({state:1})" class="tab-item"
+                   ui-sref-active="active">
+                    上架商品
+                </a>
+                <a ui-sref="product({state:2})" class="tab-item"
+                   ui-sref-active="active">
+                    冻结商品
+                </a>
+            </div>
+            <div class="tab-bt-box">
+                <a class="btn btn-color-main" ui-sref="addProduct">新增商品</a>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="product-list-wrapper">
+        <table ng-table="vm.tableParams" class="table table-condensed table-bordered table-striped">
+            <tr ng-repeat="row in $data">
+                <td title="'商品名称'"  filter="vm.subjectFilter"  sortable="'subject'">{{row.subject}}</td>
+                <td title="'提交时间'"  sortable="'updated_at'" >{{row.updated_at|dateHandler1}}</td>
+                <td title="'所属门店'"  filter="{shop_ids: 'select'}" filter-data="vm.getShops" sortable="'shop_ids'" >
+                    <div ng-repeat="item in row.shop">
+                        {{item.main_shop_name}}
+                        <span ng-if="item.branch_shop_name"> - {{item.branch_shop_name}}</span>
+                    </div>
+                </td>
+                <td title="'折扣价'" sortable="'price'"  >{{row.price}}</td>
+                <td title="'原价'"  sortable="'original_price'" >{{row.original_price}}</td>
+                <td title="'生效时间'" sortable="'gmt_start'" >{{row.gmt_start|dateHandler1}}</td>
+                <td title="'状态'" >{{row.state|stateHandler}}</td>
+                <td title="'操作'" >
+                    <a class="" >查看</a> |
+                    <a class="" ui-sref="updateProduct" >修改</a> |
+                    <span ng-if="row.state==0" ><a class="" ng-click="vm.onShelf(row)" >上架</a> |</span>
+                    <span ng-if="row.state==1" ><a class="" ng-click="vm.offShelf(row)">下架</a> |</span>
+                    <a class="" >删除</a>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+
+</div>

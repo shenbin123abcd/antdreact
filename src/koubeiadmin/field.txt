@@ -1,0 +1,40 @@
+Field             Comment
+---------------   -----------------------------------
+id
+subject           商品名称
+price             折扣价
+original_price    原价
+deposit           订金
+cover             封面
+top_images        轮播头图
+content_images    内容图片
+zhuchi_level      主持人等级
+zhuchi_desc       主持人描述
+huazhuang_level   化妆师等级
+huazhuang_desc    化妆师描述
+sheying_level     摄影等级
+sheying_desc      摄影描述
+shexiang_level    摄像等级
+shexiang_desc     摄像描述
+yingbin           迎宾区
+yishi             仪式区区
+yanhui            宴会区
+huayi             花艺
+dengguang         婚礼灯光
+daoju             舞美道具
+buyer_notes       购买须知
+state             商品状态0下架1上架2失效
+gmt_start         生效时间
+inventory         库存数量
+store_id          商户id
+created_at
+updated_at
+deleted_at
+
+
+FieldTypeCommentid 商品赠品
+tag 标签
+start_time 开始时间
+end_time  结束时间
+remark 描述
+shop_ids 适用门店

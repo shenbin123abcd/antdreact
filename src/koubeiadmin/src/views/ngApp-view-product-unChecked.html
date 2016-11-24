@@ -1,0 +1,9 @@
+<div class="product-list-wrapper">
+    <table ng-table="vm.tableParams" class="table table-condensed table-bordered table-striped">
+        <tr ng-repeat="row in $data">
+            <td data-title="'Name'" filter="{name: 'text'}" sortable="'name'">{{row.name}}</td>
+            <td data-title="'Age'" filter="{age: 'number'}" sortable="'age'">{{row.age}}</td>
+        </tr>
+    </table>
+</div>
+

@@ -1,0 +1,257 @@
+@charset "utf-8";
+@import "hbVariables";
+@import "hbReset";
+@import "hbAnimated";
+@import "lib/bootstrap-sass/assets/stylesheets/bootstrap/variables";
+@import "lib/bootstrap-sass/assets/stylesheets/bootstrap/mixins";
+
+
+
+$ff_SimHei: Arial,Verdana,Tahoma,'Hiragino Sans GB',SimHei,SimSun,sans-serif;
+$gkk_color: #9692ff;
+$pxy_color: #16c2af;
+
+a{
+  cursor: pointer;
+  &:focus{
+    outline: none;
+  }
+}
+@keyframes pulse {
+  from {
+    -webkit-transform: scale3d(1, 1, 1);
+    transform: scale3d(1, 1, 1);
+  }
+
+  50% {
+    -webkit-transform: scale3d(1.1, 1.1, 1.1);
+    transform: scale3d(1.1, 1.1, 1.1);
+  }
+
+  to {
+    -webkit-transform: scale3d(1, 1, 1);
+    transform: scale3d(1, 1, 1);
+  }
+}
+.btn-color-main {
+  @include button-variant(#fff, $mainColor, $mainColor);
+  //border-radius: 2px;
+  &:active,
+  &.active {
+    //@include box-shadow(none);
+    //background-color: #fff;
+    //&:focus,
+    //&:focus,
+    //&:hover,
+    //&.hover {
+    //  background-color: #fff;
+    //}
+  }
+  //
+  //&:focus,
+  //&.focus {
+  //  color: $mainColor;
+  //  background-color: $mainColor;
+  //  border-color: darken($mainColor, 25%);
+  //}
+  //&:hover {
+  //  color: $mainColor;
+  //  background-color: $mainColor;
+  //  border-color: darken($mainColor, 12%);
+  //}
+  &.disabled,
+  &[disabled] {
+    //color: #666666;
+    //background-color: #666666;
+    //border-color: #666666;
+    //&:focus,
+    //&.focus {
+    //  border-color: #666666;
+    //}
+  }
+
+}
+.html .ui-select-multiple.ui-select-bootstrap {
+  //padding: 4px 12px 0px;
+}
+
+.control-label{
+  &.text-left{
+    text-align: left;
+  }
+  &.text-center{
+    text-align: center;
+  }
+  &.text-right{
+    text-align: right;
+  }
+
+}
+
+.date-control{
+  margin-top: 34px;
+}
+
+.btn-size-main {
+  //@include button-size(7px, $padding-large-horizontal, 16px, $line-height-large, $btn-border-radius-large);
+  padding: 0.24rem;
+  font-size: 0.34rem;
+
+}
+.ng-submitted {
+  .form-control.ng-invalid {
+    border-color: $state-danger-text;
+    @include box-shadow(inset 0 1px 1px rgba(0,0,0,.075)); // Redeclare so transitions work
+    &:focus {
+      border-color: darken($state-danger-text, 10%);
+      $shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 6px lighten($state-danger-text, 20%);
+      @include box-shadow($shadow);
+    }
+  }
+}
+
+
+.page-loading-wrapper{
+  padding: 30px;
+  text-align: center;
+  &.my-fade,&.transition{
+    &-enter{
+      width: 100%;
+      left: 0;
+      top: 30px;
+      position: absolute;
+      &-active{
+      }
+    }
+    &-leave{
+      width: 100%;
+      left: 0;
+      top: 30px;
+      position: absolute;
+      &-active{
+      }
+    }
+  }
+  .haloIcon{
+    font-size: 36px;
+    color: #999;
+  }
+}
+.page-title{
+  font-size: 16px;
+}
+.my-nav-wrapper{
+  margin-left: -15px;
+  margin-right: -15px;
+  .tab-item-box{
+    float: left;
+  }
+  .tab-box{
+    margin: 0;
+    border-bottom: 2px solid $borderColor;
+  }
+  .tab-item{
+    padding: 10px 15px;
+    font-size: 14px;
+    float: left;
+    display: block;
+    text-decoration: none;
+    cursor: pointer;
+    margin-bottom: -2px;
+    margin-left: 5px;
+    border-bottom: 2px solid transparent;
+    &:first-child{
+      margin-left: 0;
+    }
+    &.active,&:hover{
+      color: $mainColor;
+      border-bottom: 2px solid $mainColor;
+    }
+  }
+  .tab-bt-box{
+    float: right;
+    padding-right: 15px;
+  }
+}
+
+.product-data-wrapper{
+  margin-top: 20px;
+  padding-bottom: 40px;
+
+  .form-horizontal{
+    margin-top: 20px;
+  }
+}
+.product-list-wrapper{
+  margin-top: 20px;
+}
+.product-pic-wrapper{
+  margin-top: 20px;
+  .empty-box{
+    padding-top: 50px;
+    text-align: center;
+    .img{
+      cursor: pointer;
+    }
+  }
+  .empty-text{
+    margin-top: 10px;
+    color: $secondTextColor;
+  }
+  .thumbnail{
+    height: 0;
+    padding-bottom: 75%;
+    overflow: hidden;
+    cursor: pointer;
+    position: relative;
+    &:before{
+      content: '';
+      position: absolute;
+      bottom: 0;
+      height: 4px;
+      width: 100%;
+      left: 0;
+      background-color: #fff;
+    }
+    &:hover{
+      border-color: #337ab7;
+      .bt-box{
+        visibility: visible;
+        opacity: 1;
+      }
+    }
+    .bt-box{
+      visibility: hidden;
+      opacity: 0;
+      position: absolute;
+      transition: 0.3s;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      .td{
+        padding-left: 15%;
+        padding-right: 15%;
+      }
+    }
+    .set-cover{
+
+    }
+    .delete-pic{
+      margin-top: 15px;
+
+    }
+
+
+
+  }
+  .form-helper-box{
+    margin-top: 25px;
+    color: $secondTextColor;
+  }
+  .form-bt-box{
+    margin-top: 15px;
+  }
+
+
+}

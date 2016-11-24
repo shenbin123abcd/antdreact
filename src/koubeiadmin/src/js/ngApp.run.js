@@ -1,0 +1,60 @@
+(function(){
+    "use strict";
+    angular.module('halo').run(['$rootScope','$state','$timeout','$window','$location','$sce',
+    function($rootScope, $state, $timeout,$window,$location,$sce) {
+        console.log($state)
+
+        if(!hb.Cookies.get('koubei_token')){
+            if(!$state.current.name=='auth'){
+                alert('您的授权已过期')
+            }
+        }
+        // $rootScope.pageTitle='个人中心 - 开放平台';
+        // $rootScope.staticUrl=appConfig.staticUrl;
+        // $rootScope.Math=Math;
+        // $rootScope.newBust=(new Date().getTime());
+        // $rootScope.imgPreload='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABAQMAAAAl21bKAAAABGdBTUEAALGPC/xhBQAAAAFzUkdCAK7OHOkAAAADUExURfDw8Lu/XasAAAAKSURBVAjXY2AAAAACAAHiIbwzAAAAAElFTkSuQmCC';
+        // $rootScope.$on('$stateChangeStart', function (event, toState, toParams, fromState, fromParams) {
+        //     //console.log(event, toState, toParams, fromState, fromParams);
+        //     //console.log(toState, toParams,$location.url());
+        //
+        //     $rootScope.toState=toState;
+        //     $rootScope.fromState=fromState;
+        //     $rootScope.fromParams=fromParams;
+        //
+        //
+        // });
+        $rootScope.$on('$stateChangeStart', function(evt, to, params) {
+            if (to.redirectTo) {
+                evt.preventDefault();
+                $state.go(to.redirectTo, params)
+            }
+        });
+        // $rootScope.$on('$stateChangeSuccess', function (event, toState, toParams, fromState, fromParams) {
+        //     //console.log(toState, toParams);
+        //     _hmt.push(['_trackPageview', $location.url()]);
+        // });
+        // $rootScope.windowWidth=$($window).width();
+
+        // $rootScope.device=hb.agent.device();
+        // $rootScope.browser=hb.agent.browser();
+        //
+        //
+        // $rootScope.user=app.index.haloAuth().getUser();
+        //console.log($rootScope.user)
+
+        // $rootScope.go=function(url){
+        //     window.location.href=url;
+        // };
+        $rootScope.history=$window.history;
+
+        //alert(haloBrowser.device());
+
+        // $($window).on('orientationchange',function(){
+        //     $rootScope.windowWidth=$($window).width();
+        // });
+        //$sce.trustAsResourceUrl('http://10.0.1.29:9000/app/public/uc/views/uc.view.tabs.html')
+
+
+    }]);
+}());

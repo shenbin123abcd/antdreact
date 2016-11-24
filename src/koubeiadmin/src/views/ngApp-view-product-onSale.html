@@ -1,0 +1,12 @@
+<div class="product-list-wrapper">
+    <a ui-sref=""></a>
+
+
+    <table ng-table="vm.tableParams" class="table table-condensed table-bordered table-striped">
+        <tr ng-repeat="row in $data">
+            <td data-title="'商品名称'" filter="{name: 'text'}" sortable="'name'">{{row.subject}}</td>
+            <td data-title="'提交时间'" >{{row.created_at}}</td>
+        </tr>
+    </table>
+</div>
+
